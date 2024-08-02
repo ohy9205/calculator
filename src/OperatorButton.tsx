@@ -6,7 +6,7 @@ type Props = {
 function OperatorButton({ content, className }: Props) {
   return (
     <button
-      className={`bg-[#F49D1A] w-[45px] h-[45px] rounded-full
+      className={`flex justify-center items-center bg-[#F49D1A] w-[45px] h-[45px] rounded-full
        ${className}`}>
       {content}
     </button>
