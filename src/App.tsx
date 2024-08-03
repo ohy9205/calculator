@@ -24,24 +24,38 @@ function App() {
       return;
     }
 
-    const operator = key.replace("x", "*").replace("÷", "/");
+    const operator = key.replace("×", "*").replace("÷", "/").replace("^", "**");
 
-    setResult(display + operator);
+    setResult(result + display + operator);
+  };
+
+  const calculatorResult = () => {
+    setDisplay(eval(result + display));
   };
 
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {
       const { key } = event;
-      const regex = /^[0-9.]$/;
+      const numberRegex = /^[0-9.]$/;
+      const operatorRegex = /^[*/+\-%^=]$/;
 
-      if (!regex.test(key)) {
+      if (
+        !numberRegex.test(key) &&
+        !operatorRegex.test(key) &&
+        key !== "Enter" &&
+        key !== "Backspace"
+      ) {
         return;
       }
 
-      if (key === "Backspace") {
-        backspaceKey();
-      } else {
+      if (numberRegex.test(key)) {
         numberKey(key);
+      } else if (operatorRegex.test(key)) {
+        operatorKey(key);
+      } else if (key === "Backspace") {
+        backspaceKey();
+      } else if (key === "Enter") {
+        calculatorResult();
       }
     };
 
@@ -50,7 +64,7 @@ function App() {
     return () => {
       window.removeEventListener("keydown", handler);
     };
-  }, [display]);
+  }, [display, result]);
 
   return (
     <div className="w-[400px] h-[367px] bg-[#242530] p-[25px]">
@@ -97,7 +111,9 @@ function App() {
               action={() => operatorKey(it)}
             />
           ))}
-          <button className="col-span-2 bg-[#B2B2B2] w-[104.83px] h-[46.8px] rounded-[100px] text-black text-[28px]">
+          <button
+            className="col-span-2 bg-[#B2B2B2] w-[104.83px] h-[46.8px] rounded-[100px] text-black text-[28px]"
+            onClick={calculatorResult}>
             ＝
           </button>
         </div>
