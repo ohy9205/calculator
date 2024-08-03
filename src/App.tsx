@@ -11,9 +11,14 @@ function App() {
 
   // 숫자 키패드 조작
   const numberKey = (key: string | number) => {
+    if (error) {
+      setError("");
+    }
+
     if (result) {
       setDisplay("");
     }
+
     setDisplay((prev) => prev + String(key));
   };
 
@@ -30,7 +35,7 @@ function App() {
 
     const operator = key.replace("×", "*").replace("÷", "/").replace("^", "**");
 
-    setResult(result + display + operator);
+    setResult(display + operator);
   };
 
   // 결과 계산
@@ -39,6 +44,7 @@ function App() {
 
     if (calculatorResult === Infinity || isNaN(calculatorResult)) {
       setError("Error: Cannot divide by zero");
+      setDisplay("");
     } else {
       setDisplay(calculatorResult);
     }
