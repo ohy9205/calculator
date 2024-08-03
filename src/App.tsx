@@ -5,9 +5,10 @@ import OperatorButton from "./OperatorButton";
 import cancle from "./assets/cancle.svg";
 
 function App() {
-  const [display, setDisplay] = useState("");
-  const [result, setResult] = useState("");
+  const [display, setDisplay] = useState(""); // 계산기 화면
+  const [result, setResult] = useState(""); // 계산 결과
 
+  // 숫자 키패드 조작
   const numberKey = (key: string | number) => {
     if (result) {
       setDisplay("");
@@ -15,10 +16,12 @@ function App() {
     setDisplay((prev) => prev + String(key));
   };
 
+  // 숫자 삭제 키패드 조작
   const backspaceKey = () => {
     setDisplay(display.slice(0, -1));
   };
 
+  // 연산자 키패드 조작
   const operatorKey = (key: string) => {
     if (display === "") {
       return;
@@ -29,11 +32,13 @@ function App() {
     setResult(result + display + operator);
   };
 
+  // 결과 계산
   const calculatorResult = () => {
     setDisplay(eval(result + display));
   };
 
   useEffect(() => {
+    // 키보드 입력 처리
     const handler = (event: KeyboardEvent) => {
       const { key } = event;
       const numberRegex = /^[0-9.]$/;
