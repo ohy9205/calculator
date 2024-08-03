@@ -5,28 +5,41 @@ import OperatorButton from "./OperatorButton";
 import cancle from "./assets/cancle.svg";
 
 function App() {
-  const [result, setResult] = useState("0");
+  const [display, setDisplay] = useState("");
+  const [result, setResult] = useState("");
 
   const numberKey = (key: string | number) => {
-    if (key === ".") {
-      if (result.slice(-1) === ".") {
-        return;
-      }
-      setResult(result + ".");
-    } else if (key === "remove") {
-      setResult(result.slice(0, -1));
-    } else {
-      setResult(result === "0" ? String(key) : result + String(key));
+    if (result) {
+      setDisplay("");
     }
+    setDisplay((prev) => prev + String(key));
+  };
+
+  const backspaceKey = () => {
+    setDisplay(display.slice(0, -1));
+  };
+
+  const operatorKey = (key: string) => {
+    if (display === "") {
+      return;
+    }
+
+    const operator = key.replace("x", "*").replace("÷", "/");
+
+    setResult(display + operator);
   };
 
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {
       const { key } = event;
       const regex = /^[0-9.]$/;
-      console.log(key);
+
       if (!regex.test(key)) {
         return;
+      }
+
+      if (key === "Backspace") {
+        backspaceKey();
       } else {
         numberKey(key);
       }
@@ -37,13 +50,13 @@ function App() {
     return () => {
       window.removeEventListener("keydown", handler);
     };
-  }, [result]);
+  }, [display]);
 
-  https: return (
+  return (
     <div className="w-[400px] h-[367px] bg-[#242530] p-[25px]">
       <div className="bg-[#3A3F77] h-[70px] pt-[18px] pr-[16px] text-right rounded-[20px]">
         <span className="text-[32px] leading-[38.73px]">
-          {result || 0} &nbsp;
+          {display || 0} &nbsp;
         </span>
       </div>
       <div className="flex gap-[23px] mt-[22px]">
@@ -64,15 +77,25 @@ function App() {
                 className="w-[33px] bg-blend-lighten"
               />
             }
-            action={() => numberKey("remove")}
+            action={backspaceKey}
           />
         </div>
         <div className="grid grid-cols-2 gap-x-[12px] gap-y-[15px]">
           {["×", "÷", "+", "-"].map((it) => (
-            <OperatorButton key={it} content={it} className="text-[32px]" />
+            <OperatorButton
+              key={it}
+              content={it}
+              className="text-[32px]"
+              action={() => operatorKey(it)}
+            />
           ))}
           {["%", "^"].map((it) => (
-            <OperatorButton key={it} content={it} className="text-[24px]" />
+            <OperatorButton
+              key={it}
+              content={it}
+              className="text-[24px]"
+              action={() => operatorKey(it)}
+            />
           ))}
           <button className="col-span-2 bg-[#B2B2B2] w-[104.83px] h-[46.8px] rounded-[100px] text-black text-[28px]">
             ＝
