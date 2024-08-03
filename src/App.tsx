@@ -7,6 +7,7 @@ import cancle from "./assets/cancle.svg";
 function App() {
   const [display, setDisplay] = useState(""); // 계산기 화면
   const [result, setResult] = useState(""); // 계산 결과
+  const [error, setError] = useState("");
 
   // 숫자 키패드 조작
   const numberKey = (key: string | number) => {
@@ -33,8 +34,14 @@ function App() {
   };
 
   // 결과 계산
-  const calculatorResult = () => {
-    setDisplay(eval(result + display));
+  const calculate = () => {
+    const calculatorResult = eval(result + display);
+
+    if (calculatorResult === Infinity || isNaN(calculatorResult)) {
+      setError("Error: Cannot divide by zero");
+    } else {
+      setDisplay(calculatorResult);
+    }
   };
 
   useEffect(() => {
@@ -60,7 +67,7 @@ function App() {
       } else if (key === "Backspace") {
         backspaceKey();
       } else if (key === "Enter") {
-        calculatorResult();
+        calculate();
       }
     };
 
@@ -75,7 +82,7 @@ function App() {
     <div className="w-[400px] h-[367px] bg-[#242530] p-[25px]">
       <div className="bg-[#3A3F77] h-[70px] pt-[18px] pr-[16px] text-right rounded-[20px]">
         <span className="text-[32px] leading-[38.73px]">
-          {display || 0} &nbsp;
+          {error || display || 0} &nbsp;
         </span>
       </div>
       <div className="flex gap-[23px] mt-[22px]">
@@ -118,7 +125,7 @@ function App() {
           ))}
           <button
             className="col-span-2 bg-[#B2B2B2] w-[104.83px] h-[46.8px] rounded-[100px] text-black text-[28px]"
-            onClick={calculatorResult}>
+            onClick={calculate}>
             ＝
           </button>
         </div>
